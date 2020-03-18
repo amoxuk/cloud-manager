@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Custom DataGrid Pager - jQuery EasyUI Demo</title>
+    <link href="js/jquery-easyui-1.7.0/themes/icon.css" rel="stylesheet" type="text/css">
+    <link href="js/jquery-easyui-1.7.0/themes/demo.css" rel="stylesheet" type="text/css">
+    <link href="js/jquery-easyui-1.7.0/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+    <script src="js/jquery-easyui-1.7.0/jquery.min.js" type="text/javascript"></script>
+    <script src="js/jquery-easyui-1.7.0/jquery.easyui.min.js" type="text/javascript"></script>
+    <style>
+        .header-lable {
+            width: 50px;
+        }
+
+        .header-item {
+            margin: 1px 0 1px 0;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+<h2>Custom DataGrid Pager</h2>
+
+<div style="margin:10px 0;"></div>
+<table id="dg"
+       style="width:700px;height:250px"
+       title="Custom DataGrid Pager">
+
+</table>
+<div id="tb">
+    <input class="header-lable" type="text">
+    <input class="header-lable" type="text">
+    <input class="header-lable" type="text">
+    <select class="header-lable" id="lsf1" name="lsf1">
+        <option value="aa">aitem1</option>
+        <option>aitem2</option>
+        <option>aitem3</option>
+        <option>aitem4</option>
+        <option>aitem5</option>
+    </select>
+    <select class="header-lable" id="lsf2" name="lsf2">
+        <option value="bb">bitem1</option>
+        <option>aitem2</option>
+        <option>aitem3</option>
+        <option>aitem4</option>
+        <option>aitem5</option>
+    </select>
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" href="#"></a>
+
+    <a class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" href="#"></a>
+</div>
+<script type="text/javascript">
+    $('#dg').datagrid({
+        url: 'js/datagrid_data2.json',
+        method: 'get',
+        pagination: true,
+        pageList: [10],
+        rownumbers: true,
+        columns: [[
+            {field: 'ck', checkbox: 'true', width: 100},
+            {field: 'itemid', title: 'Item ID', width: 100},
+            {field: 'productid', title: 'Product', width: 100},
+            {field: 'listprice', title: 'List Price', width: 100},
+            {field: 'unitcost', title: 'Unit Cost', width: 100},
+            {field: 'attr1', title: 'Attribute', width: 100},
+            {field: 'status', title: 'Status', width: 100},
+            {
+                field: 'price', title: 'Price', width: 100, align: 'center',
+                styler: function (value, row, index) {
+                    return 'color:blue;text-decoration-line: underline;';
+                }
+            }
+        ]],
+        toolbar: '#tb'
+
+    });
+
+    $(function () {
+
+        //当请求远程数据时，发送的额外参数。
+        $('#dg').datagrid({
+            queryParams: {
+                mac: 'easyui',
+                core: 'easyui',
+                lsf: 'easyui',
+                ip: 'easyui',
+                name: 'datagrid'
+            }
+        });
+        //返回要显示的过滤数据。该函数有一个参数 'data' ，表示原始数据。您可以把原始数据变成标准数据格式。该函数必须返回标准数据对象，含有 'total' 和 'rows' 属性。
+        $('#dg').datagrid({
+            loadFilter: function (data) {
+                if (data.d) {
+                    return {'total': data.total, 'row': data.d.data};
+                } else {
+                    return data;
+                }
+            }
+        });
+        //onClickCell	rowIndex, field, value	当用户单击一个单元格时触发。
+        $('#dg').datagrid({
+            onClickCell: function (index, field, value) {
+                if ('price' === field) {
+                    window.location.href = "http://localhost:63342/JWP/CloudManager/static/detail.html?id=" + value;
+                }
+            }
+        });
+        var pager = $('#dg').datagrid().datagrid('getPager');	// get the pager of datagrid
+        pager.pagination({
+            buttons: [
+                {
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        alert('delete');
+                    }
+                },
+                {
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        alert('add');
+                    }
+                }
+            ]
+        });
+    });
+
+</script>
+</body>
+</html>
